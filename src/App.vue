@@ -1,21 +1,22 @@
 <template>
   <div id="main-app" class="container">
     <h2>{{title}}</h2>
-    <h4></h4>
-    <!-- <h4>{{currentTime}}</h4> -->
-    <div v-for="(item, i) in tubeLine" v-bind:key="i">
-        <table>
-            <tr>
-                <th>{{i}}</th>
-                <th>{{item.lineName}}</th>
-                <th>to {{item.destinationName}}</th>
-            </tr>
-            <tr>
-                <td>Time until arrival:</td>
-                <td>{{Math.floor(item.timeToStation/60)}} mins</td>
-            </tr>
-        </table>
-    </div>
+    <!-- <h4>{{currentTime}}</h4> -->     
+      <table>
+        <tr>
+          <th>Line</th>
+          <th>End Destination</th>
+          <th>Time until arrival:</th>
+        </tr>
+        <tr v-for="(item, i) in tubeLine" v-bind:key="i">
+            <td>{{item.lineName}}</td>
+            <td>to {{item.destinationName}}</td>
+            <td>
+              <p v-if='Math.floor(item.timeToStation/60) === 0'>Due</p>
+              <p v-if='Math.floor(item.timeToStation/60) !== 0'>{{Math.floor(item.timeToStation/60)}} mins</p>
+            </td>           
+        </tr>
+      </table>
   </div>
 </template>
 
@@ -31,10 +32,10 @@ export default {
       title: "Arrivals board",
       // currentTime: moment("dddd, MMMM Do YYYY, h:mm:ss a"),
       tubeLine: [],
+      arrivalTime: '',
       stopPoint: "940GZZLUASL",
       serviceType: "Night",
-      refreshInterval: '',
-      // arrivalTime: this.getMinutes()
+      refreshInterval: ''
     };
   },
 
@@ -45,13 +46,19 @@ export default {
         .then(response => (this.tubeLine = response.data))
         // .catch(error => console.log(error))
     },
+    sortByTime() {
+     return this.tubeLine.filter(item => {
+       return item.timeToStation
+     })
+      .sort((a, b) => {
+        return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+      }) 
+    },
     // getMinutes() {
-    //   this.tubeline.forEach((value, index) => {
+    //   this.tubeLine.forEach((value, index) => {
     //     const mins = Math.floor(index.timeToStation/60);
-    //     const arrivingIn = mins === 0 ? "Due" : mins + "mins";
-
-    //     return arrivingIn
-    //   });
+    //     this.arrivalTime = mins === 0 ? "Due" : mins + "mins";
+    //   });      
     // },
     updateTubeInfo() {
       // clear board
@@ -61,10 +68,13 @@ export default {
     }
   },
   mounted() {
-    this.getTubeInfo()
+    this.getTubeInfo();
+    this.sortByTime();
+    // this.getMinutes();
   // },
   // updated() {
   //   this.refreshInterval = setInterval(() => {
+
   //   }, 10000);
   }
 };
