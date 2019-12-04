@@ -1,37 +1,41 @@
 <template>
   <div id="main-app" class="container">
     <h2>{{title}}</h2>
-    <h4>{{currentTime}}</h4>
+    <!-- <h4>{{currentTime}}</h4> -->
     <div v-for="(item, i) in tubeLine" v-bind:key="i">
-      <!-- <h4>{{tubeLine}}</h4> -->
-      <p>{{i}}</p> 
-      <p>{{item.id}}</p> 
+        <table>
+            <tr>
+                <th>{{i}}</th>
+                <th>{{item.lineName}}</th>
+                <th>to {{item.destinationName}}</th>
+            </tr>
+            <tr>
+                <td>Time until arrival:</td>
+                <td>{{Math.floor(item.timeToStation/60)}} mins</td>
+            </tr>
+        </table>
     </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import moment from "moment";
-
-// const ids = "circle"
+// import moment from "moment";
 
 export default {
   name: "MainApp",
   data () {
     return {
       title: "Arrivals board",
-      currentTime: moment("dddd, MMMM Do YYYY, h:mm:ss a"),
+      // currentTime: moment("dddd, MMMM Do YYYY, h:mm:ss a"),
       tubeLine: [],
-      line: "circle",
-      mode: "tube",
+      stopPoint: "940GZZLUASL",
       serviceType: "Night"
     };
   },
   mounted() {
     axios
-      // .get('https://api.tfl.gov.uk/Line/' + this.line)
-      .get('https://api.tfl.gov.uk/Line/Mode/' + this.mode + '/Route?serviceTypes=' + this.serviceType)
+      .get('https://api.tfl.gov.uk/StopPoint/' + this.stopPoint + '/Arrivals')
       .then(response => (this.tubeLine = response.data))
       // .catch(error => console.log(error))
   }
