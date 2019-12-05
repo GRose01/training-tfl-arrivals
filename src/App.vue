@@ -2,19 +2,19 @@
   <div id="main-app" class="container">
     <h2>{{title}}</h2>
     <!-- <h4>{{currentTime}}</h4> -->     
-      <table>
+      <table v-if="isLoaded">
         <tr>
           <th>Line</th>
           <th>End Destination</th>
           <th>Time until arrival:</th>
         </tr>
         <tr v-for="(item, i) in tubeLine" v-bind:key="i">
-            <td>{{item.lineName}}</td>
-            <td>to {{item.destinationName}}</td>
-            <td>
-              <p v-if='Math.floor(item.timeToStation/60) === 0'>Due</p>
-              <p v-if='Math.floor(item.timeToStation/60) !== 0'>{{Math.floor(item.timeToStation/60)}} mins</p>
-            </td>           
+          <td>{{item.lineName}}</td>
+          <td>to {{item.destinationName}}</td>
+          <td>{{item.timeToStation}}
+            <p v-if='Math.floor(item.timeToStation/60) === 0'>Due</p>
+            <p v-else>{{Math.floor(item.timeToStation/60)}} mins</p>
+          </td>           
         </tr>
       </table>
   </div>
@@ -27,56 +27,49 @@ import axios from "axios";
 
 export default {
   name: "MainApp",
+
   data () {
     return {
       title: "Arrivals board",
       // currentTime: moment("dddd, MMMM Do YYYY, h:mm:ss a"),
       tubeLine: [],
-      arrivalTime: '',
       stopPoint: "940GZZLUASL",
-      serviceType: "Night",
-      refreshInterval: ''
+      refreshInterval: '',
+      isLoaded: false
     };
   },
 
   methods: {
-      getTubeInfo() {
+    getTubeInfo() {
       axios
         .get('https://api.tfl.gov.uk/StopPoint/' + this.stopPoint + '/Arrivals')
-        .then(response => (this.tubeLine = response.data))
+        .then(response => {
+          this.tubeLine = response.data;
+          // this.getMinutes();
+          this.sortByTime();
+          this.isLoaded = true
+        })
         // .catch(error => console.log(error))
     },
+    // getMinutes() {
+    //   const times = this.tubeLine.map(x => Math.floor(x.timeToStation/60));
+    //   return times === 0 ? "Due" : Math.floor(times/60) + "mins";    
+    // },
     sortByTime() {
-     return this.tubeLine.filter(item => {
-       return item.timeToStation
-     })
-      .sort((a, b) => {
-        return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+      return this.tubeLine.sort((a, b) => {
+        return a.timeToStation - b.timeToStation;
       }) 
     },
-    // getMinutes() {
-    //   this.tubeLine.forEach((value, index) => {
-    //     const mins = Math.floor(index.timeToStation/60);
-    //     this.arrivalTime = mins === 0 ? "Due" : mins + "mins";
-    //   });      
-    // },
-    updateTubeInfo() {
-      // clear board
-
-      // use get tube info?
-
-    }
   },
+
   mounted() {
-    this.getTubeInfo();
-    this.sortByTime();
-    // this.getMinutes();
-  // },
+    this.getTubeInfo()
+  }
   // updated() {
   //   this.refreshInterval = setInterval(() => {
-
-  //   }, 10000);
-  }
+  //     this.getTubeInfo()
+  //   }, 30000);
+  // }
 };
 </script>
 
