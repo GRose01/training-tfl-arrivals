@@ -64,12 +64,12 @@ export default {
 
   mounted() {
     this.getTubeInfo()
+  },
+  updated() {
+    this.refreshInterval = setInterval(() => {
+      this.getTubeInfo()
+    }, 20000);
   }
-  // updated() {
-  //   this.refreshInterval = setInterval(() => {
-  //     this.getTubeInfo()
-  //   }, 30000);
-  // }
 };
 </script>
 
