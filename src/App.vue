@@ -5,31 +5,19 @@
       <div class="field">
         <label class="label">Line</label>
         <div class="control">
-          <input v-model="lineId" class="input" type="text" placeholder="Tube line">
+          <input v-model="lineId" class="input" type="text" placeholder="Tube line" v-on:change="getStationsInfo">
         </div>
-        <p>test tube line: {{this.lineId}}</p>
-        <!-- <p>test api {{this.stations}}</p> -->
       </div>
-      <button>Find station</button>
       <div class="field">
         <label for="stations" class="control-label">Station</label>
-        <select v-model="selectedStation" @change="getStationsInfo" name="station" id="station" class="form-control" tabindex="11">>
-          <option v-for="station in stations" :key="station.id" :value="station.id">{{ station.name }}</option>
+        <select name="station" id="station" class="form-control" v-on:change="getTubeInfo($event)">
+          <option v-for="station in stations" :key="station.id" :value="station.id">{{ station.commonName }}</option>
         </select>
-        <!-- <span>Selected: {{ this.form.selected }}</span> -->
       </div>            
-       
-      <div>
-        <p>Station:</p>
-        <input v-model="stopPoint">
-        <p>test station {{this.stopPoint}}</p>
-      </div>
     </div>
     
     <!-- <h4>{{currentTime}}</h4> -->     
       <table v-if="isLoaded">
-        <p>{{this.form.line}}</p>
-        <p>{{this.form.station}}</p>
         <tr>
           <th>Line</th>
           <th>End Destination</th>
@@ -60,17 +48,12 @@ export default {
 
   data () {
     return {
-      form: {
-        line: '',
-        station: '940GZZLUPCO',
-        selected: '',
-      },
       title: "Arrivals board",
       // currentTime: moment("dddd, MMMM Do YYYY, h:mm:ss a"),
-      tubeLine: [],
+      lineId: "",      
       stations: [],
-      lineId: "victoria",
-      stopPoint: "940GZZLUPCO",
+      stopPoint: "",
+      tubeLine: [],
       refreshInterval: '',
       isLoaded: false
     };
@@ -80,13 +63,16 @@ export default {
     getStationsInfo() {
       //this is to get the stop points on a line so the dropdown can be populated
       axios
-        .get('https://api.tfl.gov.uk/StopPoint/' + this.stopPoint + '/CanReachOnLine/' + this.lineId) 
+        .get('https://api.tfl.gov.uk/Line/'  + this.lineId + '/StopPoints') 
         .then(response => {
           this.stations = response.data;
+          // this.getTubeInfo()
+          // this.refreshInterval = setInterval(this.getTubeInfo, 20000)
         })
 
     },
-    getTubeInfo() {
+    getTubeInfo(event) {
+      this.stopPoint = event.target.value
       axios
         .get('https://api.tfl.gov.uk/StopPoint/' + this.stopPoint + '/Arrivals')
         .then(response => {
@@ -106,12 +92,10 @@ export default {
         return a.timeToStation - b.timeToStation;
       }) 
     },
-  },
+  // },
 
-  mounted() {
-    this.getStationsInfo()
-    this.getTubeInfo()
-    this.refreshInterval = setInterval(this.getTubeInfo, 20000)
+  // mounted() {
+  //   this.getStationsInfo()
   }
 };
 </script>
