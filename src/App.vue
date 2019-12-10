@@ -9,11 +9,19 @@
         </div>
       </div>
       <div class="field">
-        <label for="stations" class="control-label">Station</label>
-        <select name="station" id="station" class="form-control" v-on:change="getTubeInfo($event)">
+        <label for="stations" class="label">Station</label>
+        <select name="station" id="station" v-on:change="getTubeInfo($event)">
+          <option>Select Station</option>
           <option v-for="station in stations" :key="station.id" :value="station.id">{{ station.commonName }}</option>
         </select>
-      </div>            
+      </div>
+      <div class="field">
+        <label class="label">Platform</label>
+        <select name="platform" id="platform" v-on:change="showArrivals($event)">
+          <option>Select Platform</option>
+          <option v-for="platform in platforms" :key="platform" :value="platform">{{ platform }}</option>
+        </select>
+      </div>
     </div>
     
     <!-- <h4>{{currentTime}}</h4> -->     
@@ -24,10 +32,9 @@
           <th>Time until arrival:</th>
         </tr>
 
-        <tr v-for="(item, i) in tubeLine" v-bind:key="i">
+        <tr v-for="(item, i) in platformArrivals" v-bind:key="i">
           <td>{{item.lineName}}</td>
           <td>to {{item.destinationName}}</td>
-          <!-- <td>{{item.stationName}}</td> -->
           <td>
             <p v-if='Math.floor(item.timeToStation/60) === 0'>Due</p>
             <p v-else>{{Math.floor(item.timeToStation/60)}} mins</p>
@@ -53,8 +60,11 @@ export default {
       lineId: "",      
       stations: [],
       stopPoint: "",
-      tubeLine: [],
-      refreshInterval: '',
+      timetable: [],
+      platforms: [],
+      platform: '',
+      platformArrivals: [],
+      refreshInterval: "",
       isLoaded: false
     };
   },
@@ -66,36 +76,40 @@ export default {
         .get('https://api.tfl.gov.uk/Line/'  + this.lineId + '/StopPoints') 
         .then(response => {
           this.stations = response.data;
-          // this.getTubeInfo()
           // this.refreshInterval = setInterval(this.getTubeInfo, 20000)
         })
-
     },
     getTubeInfo(event) {
       this.stopPoint = event.target.value
       axios
         .get('https://api.tfl.gov.uk/StopPoint/' + this.stopPoint + '/Arrivals')
         .then(response => {
-          this.tubeLine = response.data;
+          this.timetable = response.data;
+          this.platformFilter();
           // this.getMinutes();
-          this.sortByTime();
-          this.isLoaded = true
         })
-        // .catch(error => console.log(error))
     },
-    // getMinutes() {
+    platformFilter() {
+      this.platforms = [...new Set(this.timetable.map(i => i.platformName))]
+    },
+    showArrivals(event) {
+      this.platform = event.target.value;
+      this.platformArrivals = this.timetable.filter(x => {
+        return x.platformName === this.platform && x.lineId === this.lineId
+      });
+      this.sortByTime();
+      this.isLoaded = true
+    },
+    sortByTime() {
+      return this.platformArrivals.sort((a, b) => {
+        return a.timeToStation - b.timeToStation;
+      }) 
+    }
+        // getMinutes() {
     //   const times = this.tubeLine.map(x => Math.floor(x.timeToStation/60));
     //   return times === 0 ? "Due" : Math.floor(times/60) + "mins";    
     // },
-    sortByTime() {
-      return this.tubeLine.sort((a, b) => {
-        return a.timeToStation - b.timeToStation;
-      }) 
-    },
-  // },
 
-  // mounted() {
-  //   this.getStationsInfo()
   }
 };
 </script>
