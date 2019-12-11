@@ -23,8 +23,7 @@
         </select>
       </div>
     </div>
-    
-    <!-- <h4>{{currentTime}}</h4> -->     
+    <button v-on:click="refresh()">Refresh</button>
       <table v-if="isLoaded">
         <tr>
           <th>Line</th>
@@ -39,7 +38,6 @@
             <p v-if='Math.floor(item.timeToStation/60) === 0'>Due</p>
             <p v-else>{{Math.floor(item.timeToStation/60)}} mins</p>
           </td>
-          <td>{{item.platformName}}</td>       
         </tr>
       </table>
   </div>
@@ -47,8 +45,6 @@
 
 <script>
 import axios from "axios";
-// import moment from "moment";
-
 
 export default {
   name: "MainApp",
@@ -56,7 +52,6 @@ export default {
   data () {
     return {
       title: "Arrivals board",
-      // currentTime: moment("dddd, MMMM Do YYYY, h:mm:ss a"),
       lineId: "",      
       stations: [],
       stopPoint: "",
@@ -71,12 +66,10 @@ export default {
 
   methods: {
     getStationsInfo() {
-      //this is to get the stop points on a line so the dropdown can be populated
       axios
         .get('https://api.tfl.gov.uk/Line/'  + this.lineId + '/StopPoints') 
         .then(response => {
           this.stations = response.data;
-          // this.refreshInterval = setInterval(this.getTubeInfo, 20000)
         })
     },
     getTubeInfo(event) {
@@ -86,7 +79,6 @@ export default {
         .then(response => {
           this.timetable = response.data;
           this.platformFilter();
-          // this.getMinutes();
         })
     },
     platformFilter() {
@@ -104,12 +96,10 @@ export default {
       return this.platformArrivals.sort((a, b) => {
         return a.timeToStation - b.timeToStation;
       }) 
+    },
+    refresh() {
+      this.getStationsInfo()
     }
-        // getMinutes() {
-    //   const times = this.tubeLine.map(x => Math.floor(x.timeToStation/60));
-    //   return times === 0 ? "Due" : Math.floor(times/60) + "mins";    
-    // },
-
   }
 };
 </script>
