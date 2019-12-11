@@ -3,27 +3,38 @@
     <h2>{{title}}</h2>
     <div id="get-info" class="form">
       <div class="field">
-        <label class="label">Line</label>
-        <div class="control">
-          <input v-model="lineId" class="input" type="text" placeholder="Tube line" v-on:change="getStationsInfo">
-        </div>
+        <label for="stations" class="label">Select Line</label>
+        <select name="line" id="lineId" v-on:change="getStationsInfo" v-model="lineId">
+          <option value="">Select Line</option>
+          <option value="bakerloo">Bakerloo</option>
+          <option value="central">Central</option>
+          <option value="circle">Circle</option>
+          <option value="district">District</option>
+          <option value="hammersmith-city">Hammersmith & City</option>
+          <option value="jubilee">Jubilee</option>
+          <option value="metropolitan">Metropolitan</option>
+          <option value="northern">Northern</option>
+          <option value="piccadilly">Piccadilly</option>
+          <option value="victoria">Victoria</option>
+          <option value="waterloo-city">Waterloo & City</option>
+        </select>
       </div>
       <div class="field">
         <label for="stations" class="label">Station</label>
-        <select name="station" id="station" v-on:change="getTubeInfo($event)">
-          <option>Select Station</option>
+        <select name="station" id="station" v-on:change="getPlatformInfo" v-model="stopPoint">
+          <option value="">Select Station</option>
           <option v-for="station in stations" :key="station.id" :value="station.id">{{ station.commonName }}</option>
         </select>
       </div>
       <div class="field">
         <label class="label">Platform</label>
-        <select name="platform" id="platform" v-on:change="showArrivals($event)">
-          <option>Select Platform</option>
+        <select name="platform" id="platform" v-on:change="getLiveTimetable" v-model="platform">
+          <option value="">Select Platform</option>
           <option v-for="platform in platforms" :key="platform" :value="platform">{{ platform }}</option>
         </select>
       </div>
     </div>
-    <button v-on:click="refresh()">Refresh</button>
+    <button v-on:click="refresh">Refresh</button>
       <table v-if="isLoaded">
         <tr>
           <th>Line</th>
@@ -66,39 +77,35 @@ export default {
 
   methods: {
     getStationsInfo() {
+      // this gets the stoppoints from line ID and sets stoppoint when station is selected
       axios
         .get('https://api.tfl.gov.uk/Line/'  + this.lineId + '/StopPoints') 
         .then(response => {
           this.stations = response.data;
         })
     },
-    getTubeInfo(event) {
-      this.stopPoint = event.target.value
+    getPlatformInfo() {
+      // this is called when station is selected. It gets the arrival info and populates the platform
       axios
         .get('https://api.tfl.gov.uk/StopPoint/' + this.stopPoint + '/Arrivals')
         .then(response => {
           this.timetable = response.data;
-          this.platformFilter();
+          this.platforms = [...new Set(this.timetable.map(i => i.platformName))];
         })
     },
-    platformFilter() {
-      this.platforms = [...new Set(this.timetable.map(i => i.platformName))]
-    },
-    showArrivals(event) {
-      this.platform = event.target.value;
+    getLiveTimetable() {
+      // this is called when plaform selected and renders correct timetable info
+      this.isLoaded = true;
       this.platformArrivals = this.timetable.filter(x => {
         return x.platformName === this.platform && x.lineId === this.lineId
       });
-      this.sortByTime();
-      this.isLoaded = true
-    },
-    sortByTime() {
       return this.platformArrivals.sort((a, b) => {
         return a.timeToStation - b.timeToStation;
-      }) 
+      });
     },
     refresh() {
-      this.getStationsInfo()
+      this.getPlatformInfo();
+      this.getLiveTimetable();
     }
   }
 };
