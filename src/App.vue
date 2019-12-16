@@ -5,7 +5,7 @@
       <div class="field">
         <label for="stations" class="label">Select Line</label>
         <select name="line" id="lineId" v-on:change="getStationsInfo" v-model="lineId">
-          <option value="">Select Line</option>
+          <option value="">Select Line </option>
           <option value="bakerloo">Bakerloo</option>
           <option value="central">Central</option>
           <option value="circle">Circle</option>
@@ -20,14 +20,14 @@
         </select>
       </div>
       <div class="field">
-        <label for="stations" class="label">Station</label>
+        <label for="stations" class="label">Station </label>
         <select name="station" id="station" v-on:change="getPlatformInfo" v-model="stopPoint">
           <option value="">Select Station</option>
           <option v-for="station in stations" :key="station.id" :value="station.id">{{ station.commonName }}</option>
         </select>
       </div>
       <div class="field">
-        <label class="label">Platform</label>
+        <label class="label">Platform </label>
         <select name="platform" id="platform" v-on:change="getLiveTimetable" v-model="platform">
           <option value="">Select Platform</option>
           <option v-for="platform in platforms" :key="platform" :value="platform">{{ platform }}</option>
@@ -90,7 +90,11 @@ export default {
         .get('https://api.tfl.gov.uk/StopPoint/' + this.stopPoint + '/Arrivals')
         .then(response => {
           this.timetable = response.data;
-          this.platforms = [...new Set(this.timetable.map(i => i.platformName))];
+          // put if statement in here to filter plaform by lines?
+          const lineTimetable = this.timetable.filter(x => {
+        return x.lineId === this.lineId
+      });
+          this.platforms = [...new Set(lineTimetable.map(i => i.platformName))];
         })
     },
     getLiveTimetable() {
