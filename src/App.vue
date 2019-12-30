@@ -35,6 +35,7 @@
       </div>
     </div>
     <button v-on:click="refresh">Refresh</button>
+    <div id=countdown>Refresh in: {{countdown}} seconds</div>
       <table v-if="isLoaded">
         <tr>
           <th>Line</th>
@@ -71,6 +72,7 @@ export default {
       platform: '',
       platformArrivals: [],
       refreshInterval: "",
+      countdown: 30,
       isLoaded: false
     };
   },
@@ -90,12 +92,37 @@ export default {
         .get('https://api.tfl.gov.uk/StopPoint/' + this.stopPoint + '/Arrivals')
         .then(response => {
           this.timetable = response.data;
-          // put if statement in here to filter plaform by lines?
           const lineTimetable = this.timetable.filter(x => {
-        return x.lineId === this.lineId
-      });
+            return x.lineId === this.lineId
+          });
+
+          
+          // const platformNo = parseInt(lineTimetable.text);
+          // return platformNo
+          // platformNo.sort((a,b) => {
+          //   return (a > b) ? 1 : -1;
+          // }); 
+      
           this.platforms = [...new Set(lineTimetable.map(i => i.platformName))];
-        })
+          
+        //   platformName.forEach(chronologicalise)
+        //   function chronologicalise(item, i, arr) {
+        //     // arr[i] = item
+        //     arr[i] = item.match(/(\d+)/)
+        //   }
+
+        //   this.platforms = platformName.sort((a,b) => {
+        //     return (a > b) ? 1 : -1;
+        //   });
+        });
+    },
+    countdown() {
+      if(this.countdown > 0) {
+        setTimeout(() => {
+            this.countdown -= 1
+            this.refresh();
+        }, 30000)
+      }
     },
     getLiveTimetable() {
       // this is called when plaform selected and renders correct timetable info
@@ -105,14 +132,15 @@ export default {
       });
       return this.platformArrivals.sort((a, b) => {
         return a.timeToStation - b.timeToStation;
-      });
+      }); 
+      this.countdown();    
     },
     refresh() {
       this.getPlatformInfo();
       this.getLiveTimetable();
     }
   }
-};
+}
 </script>
 
 
