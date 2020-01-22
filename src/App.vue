@@ -3,20 +3,10 @@
     <h2>{{title}}</h2>
     <div id="get-info" class="form">
       <div class="field">
-        <label for="stations" class="label">Select Line</label>
+        <label for="lines" class="label">Select Line</label>
         <select name="line" id="lineId" v-on:change="getStationsInfo" v-model="lineId">
           <option value="">Select Line </option>
-          <option value="bakerloo">Bakerloo</option>
-          <option value="central">Central</option>
-          <option value="circle">Circle</option>
-          <option value="district">District</option>
-          <option value="hammersmith-city">Hammersmith & City</option>
-          <option value="jubilee">Jubilee</option>
-          <option value="metropolitan">Metropolitan</option>
-          <option value="northern">Northern</option>
-          <option value="piccadilly">Piccadilly</option>
-          <option value="victoria">Victoria</option>
-          <option value="waterloo-city">Waterloo & City</option>
+          <option v-for="line in lines" :key="line.id" :value="line.id">{{ line.name }}</option>
         </select>
       </div>
       <div class="field">
@@ -35,8 +25,9 @@
       </div>
     </div>
     <button v-on:click="refresh">Refresh</button>
-    <div id=countdown>Refresh in: {{countdown}} seconds</div>
-      <table v-if="isLoaded">
+
+    <div>Refresh in: {{seconds}} seconds</div>
+      <table v-if="isLoaded" v-on:change="countdown">
         <tr>
           <th>Line</th>
           <th>End Destination</th>
@@ -64,6 +55,7 @@ export default {
   data () {
     return {
       title: "Arrivals board",
+      lines: [],
       lineId: "",      
       stations: [],
       stopPoint: "",
@@ -71,13 +63,17 @@ export default {
       platforms: [],
       platform: '',
       platformArrivals: [],
-      refreshInterval: "",
-      countdown: 30,
+      timer: null,
+      seconds: 30,
       isLoaded: false
     };
   },
 
   methods: {
+    getLineInfo() {
+      axios.get('https://api.tfl.gov.uk/Line/Mode/tube')
+        .then(response => { this.lines = response.data })
+    },
     getStationsInfo() {
       // this gets the stoppoints from line ID and sets stoppoint when station is selected
       axios
@@ -96,7 +92,6 @@ export default {
             return x.lineId === this.lineId
           });
 
-          
           // const platformNo = parseInt(lineTimetable.text);
           // return platformNo
           // platformNo.sort((a,b) => {
@@ -115,30 +110,43 @@ export default {
         //     return (a > b) ? 1 : -1;
         //   });
         });
-    },
+    },  
     countdown() {
-      if(this.countdown > 0) {
-        setTimeout(() => {
-            this.countdown -= 1
-            this.refresh();
-        }, 30000)
+      if (!this.timer) {
+        this.timer = setInterval(() => {
+          if (this.seconds > 0) {
+            this.seconds -= 1
+          } else {
+            clearInterval(this.timer)
+            this.refresh()
+          }
+        }, 1000)
       }
     },
     getLiveTimetable() {
       // this is called when plaform selected and renders correct timetable info
       this.isLoaded = true;
+      this.countdown();
       this.platformArrivals = this.timetable.filter(x => {
         return x.platformName === this.platform && x.lineId === this.lineId
       });
       return this.platformArrivals.sort((a, b) => {
         return a.timeToStation - b.timeToStation;
-      }); 
-      this.countdown();    
+      });
     },
     refresh() {
+      this.seconds = 30
+      this.timer = null
       this.getPlatformInfo();
       this.getLiveTimetable();
+      // clearInterval(this.timer)
+			// this.timer = null
+      
     }
+  },
+
+  created: function(){
+    this.getLineInfo()
   }
 }
 </script>
