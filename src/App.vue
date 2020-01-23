@@ -75,7 +75,7 @@ export default {
       // this gets the stoppoints from line ID and sets stoppoint when station is selected
       getStations(this.lineId)
         .then(response => { this.stations = response })
-    // .catch(error => console.log(error))
+        .catch(error => alert(error.name))
     },
     getPlatformInfo() {
       // this is called when station is selected. It gets the arrival info and populates the platform
@@ -87,41 +87,16 @@ export default {
             return x.lineId === this.lineId
           });
 
-          this.platforms = [...new Set(lineTimetable.map(i => i.platformName))];
-          // this.platforms.sort((a, b) => {
-          //   return (a.charAt(.length-1) > b.charAt(str.length-1)) ? 1 : -1;
-          // }); 
-
-          // const lastChar = this.platforms.map(function(el, i) {
-          //   return { index: i, value: el.charAt(this.platform.length-1)}
-          // })
-
-          // lastChar.sort((a,b) => {
-          //   return (a > b) ? 1 : -1;
-          // });
-
-          // var result = lastChar.map(function(el){
-          //   return this.timetable[el.index]
-          // })
-
-          // const platformNo = parseInt(lineTimetable.text);
-          // return platformNo
-          // platformNo.sort((a,b) => {
-          //   return (a > b) ? 1 : -1;
-          // }); 
-      
-          
-          
-        //   platformName.forEach(chronologicalise)
-        //   function chronologicalise(item, i, arr) {
-        //     // arr[i] = item
-        //     arr[i] = item.match(/(\d+)/)
-        //   }
-
-        //   this.platforms = platformName.sort((a,b) => {
-        //     return (a > b) ? 1 : -1;
-        //   });
-        });
+          this.platforms = [...new Set(lineTimetable.map(i => i.platformName))]
+            .sort(function(a, b) {
+              if (a[a.length - 1] > b[b.length - 1])
+                return 1;
+              else if (a[a.length - 1] < b[b.length - 1])
+                return -1;
+                return 0;
+            })
+        })
+        .catch(error => alert(error.name))
     },  
     countdown() {
       if (!this.timer) {
@@ -160,7 +135,7 @@ export default {
   created: function(){
     getTubeLines()
     .then(response => { this.lines = response })
-    // .catch(error => console.log(error))
+    .catch(error => alert(error.name))
   }
 }
 </script>
