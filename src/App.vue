@@ -1,5 +1,5 @@
 <template>
-  <div id="main-app" class="container">
+  <div id="app" class="container">
     <h2>{{title}}</h2>
     <div id="get-info" class="form">
       <div class="field">
@@ -47,11 +47,11 @@
 </template>
 
 <script>
-import axios from "axios";
+import { getTubeLines, getStations, getPlatforms } from "./requests.js";
+
 
 export default {
-  name: "MainApp",
-
+  name: "App",
   data () {
     return {
       title: "Arrivals board",
@@ -70,27 +70,39 @@ export default {
   },
 
   methods: {
-    getLineInfo() {
-      axios.get('https://api.tfl.gov.uk/Line/Mode/tube')
-        .then(response => { this.lines = response.data })
-    },
+  
     getStationsInfo() {
       // this gets the stoppoints from line ID and sets stoppoint when station is selected
-      axios
-        .get('https://api.tfl.gov.uk/Line/'  + this.lineId + '/StopPoints') 
-        .then(response => {
-          this.stations = response.data;
-        })
+      getStations(this.lineId)
+        .then(response => { this.stations = response })
+    // .catch(error => console.log(error))
     },
     getPlatformInfo() {
       // this is called when station is selected. It gets the arrival info and populates the platform
-      axios
-        .get('https://api.tfl.gov.uk/StopPoint/' + this.stopPoint + '/Arrivals')
+      getPlatforms(this.stopPoint)
         .then(response => {
-          this.timetable = response.data;
+          this.timetable = response;
+          
           const lineTimetable = this.timetable.filter(x => {
             return x.lineId === this.lineId
           });
+
+          this.platforms = [...new Set(lineTimetable.map(i => i.platformName))];
+          // this.platforms.sort((a, b) => {
+          //   return (a.charAt(.length-1) > b.charAt(str.length-1)) ? 1 : -1;
+          // }); 
+
+          // const lastChar = this.platforms.map(function(el, i) {
+          //   return { index: i, value: el.charAt(this.platform.length-1)}
+          // })
+
+          // lastChar.sort((a,b) => {
+          //   return (a > b) ? 1 : -1;
+          // });
+
+          // var result = lastChar.map(function(el){
+          //   return this.timetable[el.index]
+          // })
 
           // const platformNo = parseInt(lineTimetable.text);
           // return platformNo
@@ -98,7 +110,7 @@ export default {
           //   return (a > b) ? 1 : -1;
           // }); 
       
-          this.platforms = [...new Set(lineTimetable.map(i => i.platformName))];
+          
           
         //   platformName.forEach(chronologicalise)
         //   function chronologicalise(item, i, arr) {
@@ -146,7 +158,9 @@ export default {
   },
 
   created: function(){
-    this.getLineInfo()
+    getTubeLines()
+    .then(response => { this.lines = response })
+    // .catch(error => console.log(error))
   }
 }
 </script>
