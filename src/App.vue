@@ -73,6 +73,7 @@ export default {
   
     getStationsInfo() {
       // this gets the stoppoints from line ID and sets stoppoint when station is selected
+      clearInterval(this.timer)
       if (this.lineId != null || this.lineId != undefined) {
         getStations(this.lineId)
           .then(response => { this.stations = response })
@@ -81,6 +82,7 @@ export default {
     },
     getPlatformInfo() {
       // this is called when station is selected. It gets the arrival info and populates the platform
+      clearInterval(this.timer)
       if (this.stopPoint != null  || this.lineId != undefined) {
         getPlatforms(this.stopPoint)
           .then(response => {
@@ -94,8 +96,8 @@ export default {
               .sort((a, b) => (a[a.length - 1] > b[b.length - 1]) ? 1 : -1)
           })
           .catch(error => alert(error.name))
-      }
-    },  
+      }      
+    },
     countdown() {
       if (!this.timer) {
         this.timer = setInterval(() => {
@@ -111,7 +113,7 @@ export default {
     getLiveTimetable() {
       // this is called when plaform selected and renders correct timetable info
       this.isLoaded = true;
-      this.countdown();
+      this.refresh();
       this.platformArrivals = this.timetable.filter(x => {
         return x.platformName === this.platform && x.lineId === this.lineId
       });
@@ -120,13 +122,10 @@ export default {
       });
     },
     refresh() {
+      clearInterval(this.timer)
       this.seconds = 30
       this.timer = null
-      this.getPlatformInfo();
-      this.getLiveTimetable();
-      // clearInterval(this.timer)
-			// this.timer = null
-      
+      this.countdown()  
     }
   },
 
