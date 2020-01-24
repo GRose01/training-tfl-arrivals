@@ -73,30 +73,34 @@ export default {
   
     getStationsInfo() {
       // this gets the stoppoints from line ID and sets stoppoint when station is selected
-      getStations(this.lineId)
-        .then(response => { this.stations = response })
-        .catch(error => alert(error.name))
+      if (this.lineId != null || this.lineId != undefined) {
+        getStations(this.lineId)
+          .then(response => { this.stations = response })
+          .catch(error => alert(error.name))
+      }
     },
     getPlatformInfo() {
       // this is called when station is selected. It gets the arrival info and populates the platform
-      getPlatforms(this.stopPoint)
-        .then(response => {
-          this.timetable = response;
-          
-          const lineTimetable = this.timetable.filter(x => {
-            return x.lineId === this.lineId
-          });
+      if (this.stopPoint != null  || this.lineId != undefined) {
+        getPlatforms(this.stopPoint)
+          .then(response => {
+            this.timetable = response;
+            
+            const lineTimetable = this.timetable.filter(x => {
+              return x.lineId === this.lineId
+            });
 
-          this.platforms = [...new Set(lineTimetable.map(i => i.platformName))]
-            .sort(function(a, b) {
-              if (a[a.length - 1] > b[b.length - 1])
-                return 1;
-              else if (a[a.length - 1] < b[b.length - 1])
-                return -1;
-                return 0;
-            })
-        })
-        .catch(error => alert(error.name))
+            this.platforms = [...new Set(lineTimetable.map(i => i.platformName))]
+              .sort(function(a, b) {
+                if (a[a.length - 1] > b[b.length - 1])
+                  return 1;
+                else if (a[a.length - 1] < b[b.length - 1])
+                  return -1;
+                  return 0;
+              })
+          })
+          .catch(error => alert(error.name))
+      }
     },  
     countdown() {
       if (!this.timer) {
