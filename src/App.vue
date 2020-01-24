@@ -91,13 +91,7 @@ export default {
             });
 
             this.platforms = [...new Set(lineTimetable.map(i => i.platformName))]
-              .sort(function(a, b) {
-                if (a[a.length - 1] > b[b.length - 1])
-                  return 1;
-                else if (a[a.length - 1] < b[b.length - 1])
-                  return -1;
-                  return 0;
-              })
+              .sort((a, b) => (a[a.length - 1] > b[b.length - 1]) ? 1 : -1)
           })
           .catch(error => alert(error.name))
       }
