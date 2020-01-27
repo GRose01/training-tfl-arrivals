@@ -1,29 +1,34 @@
 <template>
   <div id="app" class="container">
-    <h2>{{title}}</h2>
-    <div id="get-info" class="form">
-      <div class="field">
-        <label for="lines" class="label">Select Line</label>
-        <select name="line" id="lineId" v-on:change="getStationsInfo" v-model="lineId">
-          <option value="">Select Line </option>
-          <option v-for="line in lines" :key="line.id" :value="line.id">{{ line.name }}</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="stations" class="label">Station </label>
-        <select name="station" id="station" v-on:change="getPlatformInfo" v-model="stopPoint">
-          <option value="">Select Station</option>
-          <option v-for="station in stations" :key="station.id" :value="station.id">{{ station.commonName }}</option>
-        </select>
-      </div>
-      <div class="field">
-        <label class="label">Platform </label>
-        <select name="platform" id="platform" v-on:change="getLiveTimetable" v-model="platform">
-          <option value="">Select Platform</option>
-          <option v-for="platform in platforms" :key="platform" :value="platform">{{ platform }}</option>
-        </select>
-      </div>
+    <div>
+      <h2>{{title}}</h2>
+
+      <singleDropdown 
+        :forLabel="lineLabel"
+        :labelText="lineText"
+        :initialValue="linePlaceholder"
+        :options="lines"
+        @itemChanged="lineId = $event"
+        ></singleDropdown>
+
+        <singleDropdown 
+        :forLabel="stationLabel"
+        :labelText="stationText"
+        :initialValue="stationPlaceholder"
+        :options="stations"
+        @itemChanged="stopPoint = $event"
+        ></singleDropdown>
+
+        <singleDropdown 
+        :forLabel="platformLabel"
+        :labelText="platformText"
+        :initialValue="platformPlaceholder"
+        :options="platforms"
+        @itemChanged="platform = $event"
+        ></singleDropdown>
+
     </div>
+    
     <button v-on:click="refresh">Refresh</button>
 
     <div>Refresh in: {{seconds}} seconds</div>
@@ -48,35 +53,57 @@
 
 <script>
 import { getTubeLines, getStations, getPlatforms } from "./requests.js";
-
+import singleDropdown from './components/singleDropdown.vue'
+import { dedupe } from './utilities/dedupe.js'
 
 export default {
   name: "App",
   data () {
     return {
       title: "Arrivals board",
+
+      lineLabel: "lines",
+      lineText: "Line: ",
+      linePlaceholder: "Choose a line",
       lines: [],
-      lineId: "",      
+      lineId: "",  
+
+      stationLabel: "stations",
+      stationText: "Station: ",
+      stationPlaceholder: "Choose a station",
       stations: [],
       stopPoint: "",
+      
       timetable: [],
+      platformLabel: "platforms",
+      platformText: "Platform: ",
+      platformPlaceholder: "Choose a platform",
       platforms: [],
       platform: '',
+
       platformArrivals: [],
       timer: null,
       seconds: 30,
       isLoaded: false
     };
   },
-
+  components: {
+    'singleDropdown': singleDropdown
+  },
   methods: {
-  
+    setLineData: function(event) {
+      this.lineId = event.target.value
+    },
     getStationsInfo() {
       // this gets the stoppoints from line ID and sets stoppoint when station is selected
       clearInterval(this.timer)
       if (this.lineId != null || this.lineId != undefined) {
         getStations(this.lineId)
-          .then(response => { this.stations = response })
+          .then(response => { 
+            this.stations = response.map(i => {
+              return { name: i.commonName, value: i.id }
+            })
+          })
           .catch(error => alert(error.name))
       }
     },
@@ -86,17 +113,32 @@ export default {
       if (this.stopPoint != null  || this.lineId != undefined) {
         getPlatforms(this.stopPoint)
           .then(response => {
-            this.timetable = response;
+            this.timetable = response
             
             const lineTimetable = this.timetable.filter(x => {
               return x.lineId === this.lineId
             });
 
-            this.platforms = [...new Set(lineTimetable.map(i => i.platformName))]
-              .sort((a, b) => (a[a.length - 1] > b[b.length - 1]) ? 1 : -1)
-          })
-          .catch(error => alert(error.name))
-      }      
+            const duplicatedPlatforms = lineTimetable.map(i => {
+              return { name: i.platformName, value: i.platformName }
+            })
+
+            this.platforms = dedupe(duplicatedPlatforms)
+                .sort((a, b) => (a.name[a.name.length - 1] > b.name[b.name.length - 1]) ? 1 : -1)
+            })
+            .catch(error => alert(error.name))
+      }    
+    },
+    getLiveTimetable() {
+      // this is called when plaform selected and renders correct timetable info
+      this.isLoaded = true;
+      this.refresh();
+      this.platformArrivals = this.timetable.filter(x => {
+        return x.platformName === this.platform && x.lineId === this.lineId
+      });
+      return this.platformArrivals.sort((a, b) => {
+        return a.timeToStation - b.timeToStation;
+      });
     },
     countdown() {
       if (!this.timer) {
@@ -110,17 +152,6 @@ export default {
         }, 1000)
       }
     },
-    getLiveTimetable() {
-      // this is called when plaform selected and renders correct timetable info
-      this.isLoaded = true;
-      this.refresh();
-      this.platformArrivals = this.timetable.filter(x => {
-        return x.platformName === this.platform && x.lineId === this.lineId
-      });
-      return this.platformArrivals.sort((a, b) => {
-        return a.timeToStation - b.timeToStation;
-      });
-    },
     refresh() {
       clearInterval(this.timer)
       this.seconds = 30
@@ -128,10 +159,25 @@ export default {
       this.countdown()  
     }
   },
+  watch: {
+    lineId () {
+      this.getStationsInfo()
+    },
+    stopPoint () {
+      this.getPlatformInfo()
+    },
+    platform () {
+      this.getLiveTimetable()
+    }
+  },
 
   created: function(){
     getTubeLines()
-    .then(response => { this.lines = response })
+    .then(response => { 
+      this.lines = response.map(i => {
+        return { name: i.name, value: i.id }
+      })
+    })
     .catch(error => alert(error.name))
   }
 }
