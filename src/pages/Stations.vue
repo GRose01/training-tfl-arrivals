@@ -14,7 +14,7 @@
 
 <script>
     import { getStations } from "../requests.js";
-    import singleDropdown from '../components/singleDropdown.vue';
+    import singleDropdown from '../components/SingleDropdown.vue';
 
     export default {
         name: "Stations",

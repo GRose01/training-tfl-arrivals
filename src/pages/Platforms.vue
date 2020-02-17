@@ -14,7 +14,7 @@
 
 <script>
     import { getPlatforms } from "../requests.js";
-    import singleDropdown from '../components/singleDropdown.vue';
+    import singleDropdown from '../components/SingleDropdown.vue';
     import { dedupe } from '../utilities/dedupe.js'
 
     export default {
