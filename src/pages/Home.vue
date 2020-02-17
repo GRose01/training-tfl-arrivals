@@ -1,7 +1,7 @@
 <template>
     <div>
         <h1>Home</h1>
-        <h3>This is the home page where you pick the line</h3>
+        <h3>Pick the line</h3>
         <div class=lineSelection>
             <singleDropdown 
         :forLabel="lineLabel"
@@ -53,5 +53,4 @@
                 .catch(error => alert(error.name))
         }
     }
-
 </script>
