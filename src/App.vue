@@ -1,21 +1,13 @@
 <template>
   <div id="app" class="container">
     <h2>{{title}}</h2>
-    <nav>
-        <router-link to='/'>Home</router-link>
-        <router-link to='/stations'>Stations</router-link>
-        <router-link to='/platforms'>Platforms</router-link>
-        <router-link to='/arrivals'>Arrivals Board</router-link>
-    </nav>
+    <topNav></topNav>
     <router-view />
-
   </div>
 </template>
 
 <script>
-// import { getPlatforms } from "./requests.js";
-// import singleDropdown from './components/singleDropdown.vue'
-// import { dedupe } from './utilities/dedupe.js'
+import topNav from './components/Header.vue'
 
 export default {
   name: "App",
@@ -25,7 +17,7 @@ export default {
     };
   },
   components: {
-    
+    'topNav': topNav
   },
   methods: {
     // setLineData: function(event) {

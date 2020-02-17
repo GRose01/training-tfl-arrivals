@@ -1,16 +1,13 @@
 <template>
     <div>
         <h1>Home</h1>
-        <h3>Pick the line</h3>
-        <div class=lineSelection>
             <singleDropdown 
-        :forLabel="lineLabel"
-        :labelText="lineText"
-        :initialValue="linePlaceholder"
-        :options="lines"
-        @itemChanged="lineId = $event"
-        ></singleDropdown>
-        </div>
+            :forLabel="lineLabel"
+            :labelText="lineText"
+            :initialValue="linePlaceholder"
+            :options="lines"
+            @itemChanged="lineId = $event"
+            ></singleDropdown>
     </div>
 </template>
 
