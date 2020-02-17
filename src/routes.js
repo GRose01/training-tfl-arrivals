@@ -11,3 +11,10 @@ const routes = [
 ];
 
 export default routes;
+
+
+// to make it dynamic:
+// const routes = [
+//     { path: '/', component: () => import('./Home.vue') }
+//     { path: '/about', component: () => import('./About.vue') }
+//   ]
