@@ -7,17 +7,19 @@
             :initialValue="stationPlaceholder"
             :options="stations"
             @itemChanged="stopPoint = $event"
-            @click="getStationsInfo"
         ></singleDropdown>
-        <p>current line: {{ currentLine }} </p> 
+        <button @click="changeStation">Change Station</button>
+        <p>current line: {{ lineId }} </p>
+        <p>current stoppoint: {{ currentStopPoint }} </p>  
         
 
     </div>
 </template>
 
 <script>
-    // import { getStations } from "../requests.js";
+    import { getStations } from "../requests.js";
     import singleDropdown from '../components/SingleDropdown.vue';
+    import { mapState } from 'vuex'
 
     export default {
         name: "Stations",
@@ -31,30 +33,27 @@
             }
         },
         computed: {
-            currentLine () {
-                return this.$store.state.lineId
+            ...mapState(['lineId']),
+            currentStopPoint() {
+                return this.$store.state.stopPoint
             }
         },
         components: {
             'singleDropdown': singleDropdown
         },
         methods: {
-            
+            changeStation() {
+                this.$store.dispatch('changeStation', this.stopPoint)
+            }
         },
-        // created: function(){
-        //     getStationsInfo() {
-        //     // this gets the stoppoints from line ID and sets stoppoint when station is selected
-        //         clearInterval(this.timer)
-        //         if (this.lineId != null || this.lineId != undefined) {
-        //             getStations(this.currentLine)
-        //             .then(response => { 
-        //                 this.stations = response.map(i => {
-        //                 return { name: i.commonName, value: i.id }
-        //                 })
-        //             })
-        //             .catch(error => alert(error.name))
-        //         }
-        //     }
-        // }
+        created: function() {
+            getStations(this.lineId)
+            .then(response => { 
+                this.stations = response.map(i => {
+                return { name: i.commonName, value: i.id }
+                })
+            })
+            .catch(error => alert(error.name))
+        }
     }
 </script>

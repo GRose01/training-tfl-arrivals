@@ -1,6 +1,11 @@
 <template>
     <div>
         <h1>Arrivals board</h1>
+
+        <p>current line: {{ lineId }} </p>
+        <p>current stoppoint: {{ stopPoint }} </p> 
+        <p>current platform: {{ platform }} </p>  
+
         <div class="refresh">
             <button v-on:click="refresh" class="refreshButton">Refresh</button>
             <div>Refresh in: {{seconds}} seconds</div>
@@ -27,6 +32,7 @@
 </template>
 
 <script>
+    import { mapState } from 'vuex'
 
     export default {
         name: "ArrivalsBoard",
@@ -40,6 +46,11 @@
         },
         components: {
             
+        },
+        computed: {
+          ...mapState(['lineId']),
+          ...mapState(['stopPoint']),
+          ...mapState(['platform'])
         },
         methods: {
             getLiveTimetable() {

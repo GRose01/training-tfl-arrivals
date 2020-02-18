@@ -8,7 +8,10 @@
           :options="platforms"
           @itemChanged="platform = $event"
         ></singleDropdown>
-    
+        <button @click="changePlatform">Change Platform</button>
+        <p>current line: {{ lineId }} </p>
+        <p>current stoppoint: {{ stopPoint }} </p> 
+        <p>current platform: {{ currentPlatform }} </p>  
     </div>
 </template>
 
@@ -16,6 +19,7 @@
     import { getPlatforms } from "../requests.js";
     import singleDropdown from '../components/SingleDropdown.vue';
     import { dedupe } from '../utilities/dedupe.js'
+    import { mapState } from 'vuex'
 
     export default {
         name: "Platforms",
@@ -32,12 +36,20 @@
         components: {
             'singleDropdown': singleDropdown
         },
+        computed: {
+          ...mapState(['lineId']),
+          ...mapState(['stopPoint']),
+          currentPlatform() {
+                return this.$store.state.platform
+            }
+        },
         methods: {
-            getPlatformInfo() {
-            // this is called when station is selected. It gets the arrival info and populates the platform
-            clearInterval(this.timer)
-            if (this.stopPoint != null  || this.lineId != undefined) {
-              getPlatforms(this.stopPoint)
+          changePlatform() {
+                this.$store.dispatch('changePlatform', this.platform)
+            }
+        },
+        created: function() {
+          getPlatforms(this.stopPoint)
                 .then(response => {
                   this.timetable = response
                   
@@ -53,11 +65,7 @@
                       .sort((a, b) => (a.name[a.name.length - 1] > b.name[b.name.length - 1]) ? 1 : -1)
                   })
                   .catch(error => alert(error.name))
-            }    
-          },
-        },
-        watch: {
-            
-        }
+            }
+        
     }
 </script>
