@@ -6,8 +6,11 @@
             :labelText="lineText"
             :initialValue="linePlaceholder"
             :options="lines"
+            @onSelect="changeLine"
             @itemChanged="lineId = $event"
             ></singleDropdown>
+            <button @click="changeLine">Change line</button>
+        <p> the line id currently is {{ currentLineId }} </p>
     </div>
 </template>
 
@@ -26,19 +29,21 @@
                 lineId: ""
             }
         },
+        computed: {
+            currentLineId () {
+                return this.$store.state.lineId
+            }
+        },
         components: {
             'singleDropdown': singleDropdown
         },
         methods: {
-            
+            changeLine() {
+                this.$store.dispatch('changeLine', this.lineId)
+            },
             setLineData: function(event) {
                 this.lineId = event.target.value
-            },
-        },
-        watch: {
-            // lineId () {
-            //     this.getStationsInfo()
-            // }
+            }
         },
         created: function(){
             getTubeLines()

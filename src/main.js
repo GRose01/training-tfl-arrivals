@@ -3,11 +3,11 @@ import VueRouter from 'vue-router';
 import Vuex from 'vuex'
 import App from './App.vue';
 
-import routes from './routes.js';
-import store from './store.js';
-
 import "bootstrap";
 import "bootstrap/dist/css/bootstrap.css";
+
+import routes from './routes.js';
+import store from './store'
 
 Vue.config.productionTip = false;
 
@@ -20,5 +20,5 @@ new Vue({
   // el: '#app',
   router,
   store,
-  render: h => h(App),
+  render: h => h(App)
 }).$mount('#app')
