@@ -25,7 +25,7 @@
     import { getTubeLines } from "../requests.js";
     // import singleDropdown from '../components/SingleDropdown.vue';
     import grid from '../components/Grid.vue';
-    import { mapState } from 'vuex';
+    import { mapState, mapActions } from 'vuex';
 
     export default {
         name: "Home",
@@ -39,15 +39,13 @@
         },
         computed: {
             ...mapState(['lineId'])
-            // currentLineId () {
-            //     return this.$store.state.lineId
-            // }
         },
         components: {
             // 'singleDropdown': singleDropdown,
-            'grid': grid
+            grid
         },
         methods: {
+            ...mapActions(['changeLine']),
             // changeLine() {
             //     this.$store.dispatch('changeLine', this.lineId)
             // },

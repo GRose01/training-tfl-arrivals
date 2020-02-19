@@ -32,14 +32,14 @@ export default new Vuex.Store({
     changeLine({ commit }, line) {
       commit('changeLine', line)
     },
-    changeStation(context, station) {
-      context.commit('changeStation', station)
+    changeStation({ commit }, station) {
+      commit('changeStation', station)
     },
-    changePlatform(context, platform) {
-      context.commit('changePlatform', platform)
+    changePlatform({ commit }, platform) {
+      commit('changePlatform', platform)
     },
-    setTimetable(context, timetable) {
-      context.commit('setTimetable', timetable)
+    setTimetable({ commit }, timetable) {
+      commit('setTimetable', timetable)
     }
   },
   modules: {

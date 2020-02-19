@@ -1,24 +1,26 @@
 <template>
     <div>
         <h1>Stations</h1>
-        <singleDropdown 
+        <!-- <singleDropdown 
             :forLabel="stationLabel"
             :labelText="stationText"
             :initialValue="stationPlaceholder"
             :options="stations"
             @itemChanged="stopPoint = $event"
-        ></singleDropdown>
-        <button @click="changeStation">Change Station</button>
+        ></singleDropdown> -->
+        <grid
+            title="Pick the Station"
+            :grid="stations"
+            @itemChanged="stopPoint = $event"
+            ></grid>
         <p>current line: {{ lineId }} </p>
-        <p>current stoppoint: {{ currentStopPoint }} </p>  
-        
-
+        <p>current stoppoint: {{ stopPoint }} </p>  
     </div>
 </template>
 
 <script>
     import { getStations } from "../requests.js";
-    import singleDropdown from '../components/SingleDropdown.vue';
+    import grid from '../components/Grid.vue';
     import { mapState } from 'vuex'
 
     export default {
@@ -29,22 +31,19 @@
                 stationText: "Station: ",
                 stationPlaceholder: "Choose a station",
                 stations: [],
-                stopPoint: ""
             }
         },
         computed: {
             ...mapState(['lineId']),
-            currentStopPoint() {
-                return this.$store.state.stopPoint
-            }
+            ...mapState(['stopPoint'])
         },
         components: {
-            'singleDropdown': singleDropdown
+            grid
         },
         methods: {
-            changeStation() {
-                this.$store.dispatch('changeStation', this.stopPoint)
-            }
+            // changeStation() {
+            //     this.$store.dispatch('changeStation', this.stopPoint)
+            // }
         },
         created: function() {
             getStations(this.lineId)
