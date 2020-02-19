@@ -1,7 +1,6 @@
 <template>
     <div>
         <h1>Stations</h1>
-        <div class="search"></div>
         <!-- <singleDropdown 
             :forLabel="stationLabel"
             :labelText="stationText"
@@ -36,7 +35,7 @@
         },
         computed: {
             ...mapState(['lineId']),
-            ...mapState(['stopPoint'])
+            ...mapState(['stopPoint']),
         },
         components: {
             grid

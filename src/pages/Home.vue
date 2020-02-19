@@ -16,8 +16,6 @@
             :grid="lines"
             @itemChanged="setSelectedItem"
             ></grid>
-
-        <!-- <p>Line id is {{ $route.params.id }}</p> --> 
         <p> the line id currently is {{ lineId }} </p>
     </div>
 </template>
@@ -50,9 +48,7 @@
             // accept the emit and add in the router
             setSelectedItem(line) {
                 this.changeLine(line)
-                // eslint-disable-next-line no-console
-                console.log(line)
-                this.$router.push('/station')
+                this.$router.push({ name: 'Stations', params: {id: this.lineId} })
                 
             }
             

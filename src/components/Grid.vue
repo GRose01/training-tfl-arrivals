@@ -2,18 +2,18 @@
     <div class="grid">
         <h3>{{ title }}</h3>
         <div class="card">
-            <router-link :to="{ name: 'Stations', params: {id: lineId} }">
+            <!-- <router-link :to="{ name: 'Stations', params: {id: lineId} }"> -->
                 <div>
                     <h5 
                         v-for="card in grid" 
                         :key="card.value" 
                         :value="card.value"
-                        @click="changeLine(card.value)"               
+                        @click="selectItem(card.value)"               
                         >
                         {{ card.name }}
                     </h5>
                 </div>
-            </router-link>
+            <!-- </router-link> -->
         </div>
         
     </div>
@@ -32,7 +32,7 @@ export default {
     },
     data() {
         return {
-            selectedItem: ''
+            // selectedItem: ''
         }
     },
     computed: {
