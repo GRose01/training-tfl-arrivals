@@ -27,7 +27,8 @@ export default {
             type: Array,
             required: true
         },
-        title: String
+        title: String,
+        filterKey: String
     },
     data() {
         return {
@@ -35,10 +36,14 @@ export default {
         }
     },
     computed: {
-            ...mapState(['lineId']),
-        },
+        ...mapState(['lineId']),
+    },
     methods: {
         ...mapActions(['changeLine']),
+        // send an emit to parent
+        selectItem(selectedItem) {
+            this.$emit('itemChanged', selectedItem)
+        }
     }
 }
 </script>

@@ -1,6 +1,7 @@
 <template>
     <div>
         <h1>Stations</h1>
+        <div class="search"></div>
         <!-- <singleDropdown 
             :forLabel="stationLabel"
             :labelText="stationText"

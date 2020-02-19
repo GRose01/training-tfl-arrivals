@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 <template>
     <div>
         <h1>Home</h1>
@@ -13,7 +14,7 @@
             <grid
             title="Pick the Line"
             :grid="lines"
-            @itemChanged="lineId = $event"
+            @itemChanged="setSelectedItem"
             ></grid>
 
         <!-- <p>Line id is {{ $route.params.id }}</p> --> 
@@ -46,6 +47,15 @@
         },
         methods: {
             ...mapActions(['changeLine']),
+            // accept the emit and add in the router
+            setSelectedItem(line) {
+                this.changeLine(line)
+                // eslint-disable-next-line no-console
+                console.log(line)
+                this.$router.push('/station')
+                
+            }
+            
             // changeLine() {
             //     this.$store.dispatch('changeLine', this.lineId)
             // },
