@@ -2,7 +2,6 @@
     <div class="grid">
         <h3>{{ title }}</h3>
         <div class="card">
-            <!-- <router-link :to="{ name: 'Stations', params: {id: lineId} }"> -->
                 <div>
                     <h5 
                         v-for="card in grid" 
@@ -13,9 +12,7 @@
                         {{ card.name }}
                     </h5>
                 </div>
-            <!-- </router-link> -->
-        </div>
-        
+        </div>      
     </div>
 </template>
 
@@ -29,11 +26,6 @@ export default {
         },
         title: String,
         filterKey: String
-    },
-    data() {
-        return {
-            // selectedItem: ''
-        }
     },
     computed: {
         ...mapState(['lineId']),

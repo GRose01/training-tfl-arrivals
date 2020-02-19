@@ -2,9 +2,9 @@
     <div>
         <h1>Arrivals board</h1>
 
-        <p>current line: {{ lineId }} </p>
-        <p>current stoppoint: {{ stopPoint }} </p> 
-        <p>current platform: {{ platform }} </p>  
+        <p>Line: {{ lineId }} </p>
+        <p>StopPoint: {{ stopPoint }} </p> 
+        <p>Platform: {{ platform }} </p>  
 
         <div class="refresh">
             <button v-on:click="refresh" class="refreshButton">Refresh</button>
@@ -40,7 +40,7 @@
             return { 
                 platformArrivals: [],
                 timer: null,
-                seconds: 30,
+                seconds: 60,
                 isLoaded: false
             }
         },

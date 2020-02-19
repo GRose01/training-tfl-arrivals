@@ -13,7 +13,7 @@ export default new Vuex.Store({
   getters: {
   },
   mutations: {
-    // Here we will create Jenny
+    // mutations are the only way to alter the state
     changeLine(state, line) {
       state.lineId = line
     },
@@ -28,7 +28,7 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    // Here we will create Larry
+    // actions interact with the mutations
     changeLine({ commit }, line) {
       commit('changeLine', line)
     },

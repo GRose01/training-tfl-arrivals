@@ -2,21 +2,12 @@
 <template>
     <div>
         <h1>Home</h1>
-            <!-- <singleDropdown 
-            :forLabel="lineLabel"
-            :labelText="lineText"
-            :initialValue="linePlaceholder"
-            :options="lines"
-            @onSelect="changeLine"
-            @itemChanged="lineId = $event"
-            ></singleDropdown> -->
-
             <grid
             title="Pick the Line"
             :grid="lines"
             @itemChanged="setSelectedItem"
             ></grid>
-        <p> the line id currently is {{ lineId }} </p>
+        <p>Line: {{ lineId }}</p>
     </div>
 </template>
 
@@ -49,13 +40,6 @@
                 this.$router.push({ name: 'Stations', params: {id: this.lineId} })
                 
             }
-            
-            // changeLine() {
-            //     this.$store.dispatch('changeLine', this.lineId)
-            // },
-            // setLineData: function(event) {
-            //     this.lineId = event.target.value
-            // }
         },
         created: function(){
             getTubeLines()

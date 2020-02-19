@@ -1,20 +1,13 @@
 <template>
     <div>
         <h1>Stations</h1>
-        <!-- <singleDropdown 
-            :forLabel="stationLabel"
-            :labelText="stationText"
-            :initialValue="stationPlaceholder"
-            :options="stations"
-            @itemChanged="stopPoint = $event"
-        ></singleDropdown> -->
         <grid
             title="Pick the Station"
             :grid="stations"
             @itemChanged="setSelectedItem"
             ></grid>
-        <p>current line: {{ lineId }} </p>
-        <p>current stoppoint: {{ stopPoint }} </p>  
+        <p>Line: {{ lineId }} </p>
+        <p>StopPoint: {{ stopPoint }} </p>  
     </div>
 </template>
 

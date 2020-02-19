@@ -9,22 +9,19 @@ function getTubeLines() {
     }
 
 function getStations(lineId) {
-    
-        return axios
+    return axios
         .get('https://api.tfl.gov.uk/Line/'  + lineId + '/StopPoints') 
         .then(response => {
         return response.data;
-        })
-    
+    }) 
 }
 
 function getPlatforms(stoppoint) {
-
-        return axios
+    return axios
         .get('https://api.tfl.gov.uk/StopPoint/' + stoppoint + '/Arrivals') 
         .then(response => {
         return response.data;
-        })
-    
+    })
 }
+
 export { getTubeLines, getStations, getPlatforms }

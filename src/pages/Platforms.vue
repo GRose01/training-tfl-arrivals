@@ -1,16 +1,14 @@
 <template>
     <div>
         <h1>Platforms</h1>
-
          <grid
             title="Pick the Platform"
             :grid="platforms"
             @itemChanged="setSelectedItem"
-            ></grid>
-        
-        <p>current line: {{ lineId }} </p>
-        <p>current stoppoint: {{ stopPoint }} </p> 
-        <p>current platform: {{ platform }} </p>
+            ></grid> 
+        <p>cLine: {{ lineId }} </p>
+        <p>StopPoint: {{ stopPoint }} </p> 
+        <p>Platform: {{ platform }} </p>
     </div>
 </template>
 
@@ -46,16 +44,9 @@
                 this.changePlatform(platform)
                 this.$router.push({ name: 'Arrivals', params: {id: this.platform} })  
           }
-          
-          // setTimetable() {
-          //   this.$store.dispatch('setTimetable', this.timetable)
-          // },
-          // changePlatform() {
-          //   this.$store.dispatch('changePlatform', this.platform)
-          // }
         },
         created: function() {
-          getPlatforms(this.stopPoint)
+            getPlatforms(this.stopPoint)
                 .then(response => {
                   this.setTimetable(response)
                   
@@ -71,7 +62,7 @@
                       .sort((a, b) => (a.name[a.name.length - 1] > b.name[b.name.length - 1]) ? 1 : -1)
                   })
                   .catch(error => alert(error.name))
-            }
+        }
         
     }
 </script>
