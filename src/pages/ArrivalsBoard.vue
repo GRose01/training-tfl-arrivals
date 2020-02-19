@@ -37,7 +37,7 @@
     export default {
         name: "ArrivalsBoard",
         data () {
-            return {                
+            return { 
                 platformArrivals: [],
                 timer: null,
                 seconds: 30,
@@ -50,7 +50,8 @@
         computed: {
           ...mapState(['lineId']),
           ...mapState(['stopPoint']),
-          ...mapState(['platform'])
+          ...mapState(['platform']),
+          ...mapState(['timetable'])
         },
         methods: {
             getLiveTimetable() {
@@ -82,6 +83,9 @@
                 this.timer = null
                 this.countdown()  
             }
+        },
+        created: function() {
+            this.getLiveTimetable()
         }
     }
 </script>

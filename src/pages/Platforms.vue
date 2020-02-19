@@ -11,7 +11,8 @@
         <button @click="changePlatform">Change Platform</button>
         <p>current line: {{ lineId }} </p>
         <p>current stoppoint: {{ stopPoint }} </p> 
-        <p>current platform: {{ currentPlatform }} </p>  
+        <p>current platform: {{ currentPlatform }} </p>
+        <p>timetable: {{ currentTimetable }} </p>  
     </div>
 </template>
 
@@ -40,13 +41,19 @@
           ...mapState(['lineId']),
           ...mapState(['stopPoint']),
           currentPlatform() {
-                return this.$store.state.platform
-            }
+            return this.$store.state.platform
+          },
+          currentTimetable() {
+            return this.$store.state.timetable
+          }
         },
         methods: {
+          setTimetable() {
+            this.$store.dispatch('setTimetable', this.timetable)
+          },
           changePlatform() {
-                this.$store.dispatch('changePlatform', this.platform)
-            }
+            this.$store.dispatch('changePlatform', this.platform)
+          }
         },
         created: function() {
           getPlatforms(this.stopPoint)

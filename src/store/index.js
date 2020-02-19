@@ -7,7 +7,8 @@ export default new Vuex.Store({
   state: {
     lineId: "not selected", 
     stopPoint: "not selected",
-    platform: "ot selected"
+    platform: "not selected",
+    timetable: []
   },
   getters: {
   },
@@ -21,18 +22,24 @@ export default new Vuex.Store({
     },
     changePlatform(state, platform) {
       state.platform = platform
+    },
+    setTimetable(state, timetable) {
+      state.timetable = timetable
     }
   },
   actions: {
     // Here we will create Larry
-    changeLine(context, line) {
-      context.commit('changeLine', line)
+    changeLine({ commit }, line) {
+      commit('changeLine', line)
     },
     changeStation(context, station) {
       context.commit('changeStation', station)
     },
     changePlatform(context, platform) {
       context.commit('changePlatform', platform)
+    },
+    setTimetable(context, timetable) {
+      context.commit('setTimetable', timetable)
     }
   },
   modules: {

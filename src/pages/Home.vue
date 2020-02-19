@@ -1,22 +1,31 @@
 <template>
     <div>
         <h1>Home</h1>
-            <singleDropdown 
+            <!-- <singleDropdown 
             :forLabel="lineLabel"
             :labelText="lineText"
             :initialValue="linePlaceholder"
             :options="lines"
             @onSelect="changeLine"
             @itemChanged="lineId = $event"
-            ></singleDropdown>
-            <button @click="changeLine">Change line</button>
-        <p> the line id currently is {{ currentLineId }} </p>
+            ></singleDropdown> -->
+
+            <grid
+            title="Pick the Line"
+            :grid="lines"
+            @itemChanged="lineId = $event"
+            ></grid>
+
+        <!-- <p>Line id is {{ $route.params.id }}</p> --> 
+        <p> the line id currently is {{ lineId }} </p>
     </div>
 </template>
 
 <script>
     import { getTubeLines } from "../requests.js";
-    import singleDropdown from '../components/SingleDropdown.vue';
+    // import singleDropdown from '../components/SingleDropdown.vue';
+    import grid from '../components/Grid.vue';
+    import { mapState } from 'vuex';
 
     export default {
         name: "Home",
@@ -26,24 +35,25 @@
                 lineText: "Line: ",
                 linePlaceholder: "Choose a line",
                 lines: [],
-                lineId: ""
             }
         },
         computed: {
-            currentLineId () {
-                return this.$store.state.lineId
-            }
+            ...mapState(['lineId'])
+            // currentLineId () {
+            //     return this.$store.state.lineId
+            // }
         },
         components: {
-            'singleDropdown': singleDropdown
+            // 'singleDropdown': singleDropdown,
+            'grid': grid
         },
         methods: {
-            changeLine() {
-                this.$store.dispatch('changeLine', this.lineId)
-            },
-            setLineData: function(event) {
-                this.lineId = event.target.value
-            }
+            // changeLine() {
+            //     this.$store.dispatch('changeLine', this.lineId)
+            // },
+            // setLineData: function(event) {
+            //     this.lineId = event.target.value
+            // }
         },
         created: function(){
             getTubeLines()

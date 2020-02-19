@@ -5,16 +5,9 @@ import ArrivalsBoard from './pages/ArrivalsBoard.vue'
 
 const routes = [
     {path: '/', component: Home},
-    {path: '/stations', component: Stations},
+    {path: '/stations/:id', component: Stations},
     {path: '/platforms', component: Platforms},
     {path: '/arrivals', component: ArrivalsBoard}
 ];
 
 export default routes;
-
-
-// to make it dynamic:
-// const routes = [
-//     { path: '/', component: () => import('./Home.vue') }
-//     { path: '/about', component: () => import('./About.vue') }
-//   ]
