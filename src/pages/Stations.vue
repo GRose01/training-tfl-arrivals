@@ -11,7 +11,7 @@
         <grid
             title="Pick the Station"
             :grid="stations"
-            @itemChanged="stopPoint = $event"
+            @itemChanged="setSelectedItem"
             ></grid>
         <p>current line: {{ lineId }} </p>
         <p>current stoppoint: {{ stopPoint }} </p>  
@@ -21,7 +21,7 @@
 <script>
     import { getStations } from "../requests.js";
     import grid from '../components/Grid.vue';
-    import { mapState } from 'vuex'
+    import { mapState, mapActions } from 'vuex'
 
     export default {
         name: "Stations",
@@ -41,9 +41,12 @@
             grid
         },
         methods: {
-            // changeStation() {
-            //     this.$store.dispatch('changeStation', this.stopPoint)
-            // }
+            ...mapActions(['changeStation']),
+            // accept the emit and add in the router
+            setSelectedItem(station) {
+                this.changeStation(station)
+                this.$router.push({ name: 'Platforms', params: {id: this.stopPoint} })  
+            }
         },
         created: function() {
             getStations(this.lineId)

@@ -1,64 +1,63 @@
 <template>
     <div>
         <h1>Platforms</h1>
-        <singleDropdown 
-          :forLabel="platformLabel"
-          :labelText="platformText"
-          :initialValue="platformPlaceholder"
-          :options="platforms"
-          @itemChanged="platform = $event"
-        ></singleDropdown>
-        <button @click="changePlatform">Change Platform</button>
+
+         <grid
+            title="Pick the Platform"
+            :grid="platforms"
+            @itemChanged="setSelectedItem"
+            ></grid>
+        
         <p>current line: {{ lineId }} </p>
         <p>current stoppoint: {{ stopPoint }} </p> 
-        <p>current platform: {{ currentPlatform }} </p>
-        <p>timetable: {{ currentTimetable }} </p>  
+        <p>current platform: {{ platform }} </p>
     </div>
 </template>
 
 <script>
     import { getPlatforms } from "../requests.js";
-    import singleDropdown from '../components/SingleDropdown.vue';
-    import { dedupe } from '../utilities/dedupe.js'
-    import { mapState } from 'vuex'
+    import grid from '../components/Grid.vue';
+    import { dedupe } from '../utilities/dedupe.js';
+    import { mapState, mapActions } from 'vuex';
 
     export default {
         name: "Platforms",
         data () {
             return {
-              timetable: [],
               platformLabel: "platforms",
               platformText: "Platform: ",
               platformPlaceholder: "Choose a platform",
               platforms: [],
-              platform: ''
             }
         },
         components: {
-            'singleDropdown': singleDropdown
+            grid
         },
         computed: {
           ...mapState(['lineId']),
           ...mapState(['stopPoint']),
-          currentPlatform() {
-            return this.$store.state.platform
-          },
-          currentTimetable() {
-            return this.$store.state.timetable
-          }
+          ...mapState(['platform']),
+          ...mapState(['timetable'])
         },
         methods: {
-          setTimetable() {
-            this.$store.dispatch('setTimetable', this.timetable)
-          },
-          changePlatform() {
-            this.$store.dispatch('changePlatform', this.platform)
+          ...mapActions(['changePlatform']),
+          ...mapActions(['setTimetable']),
+          setSelectedItem(platform) {
+                this.changePlatform(platform)
+                this.$router.push({ name: 'Arrivals', params: {id: this.platform} })  
           }
+          
+          // setTimetable() {
+          //   this.$store.dispatch('setTimetable', this.timetable)
+          // },
+          // changePlatform() {
+          //   this.$store.dispatch('changePlatform', this.platform)
+          // }
         },
         created: function() {
           getPlatforms(this.stopPoint)
                 .then(response => {
-                  this.timetable = response
+                  this.setTimetable(response)
                   
                   const lineTimetable = this.timetable.filter(x => {
                     return x.lineId === this.lineId

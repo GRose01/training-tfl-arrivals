@@ -6,8 +6,8 @@ import ArrivalsBoard from './pages/ArrivalsBoard.vue'
 const routes = [
     {path: '/', component: Home},
     {path: '/stations/:id', name: 'Stations', component: Stations},
-    {path: '/platforms', component: Platforms},
-    {path: '/arrivals', component: ArrivalsBoard}
+    {path: '/platforms/:id', name: 'Platforms', component: Platforms},
+    {path: '/arrivals/:id', name: 'Arrivals', component: ArrivalsBoard}
 ];
 
 export default routes;

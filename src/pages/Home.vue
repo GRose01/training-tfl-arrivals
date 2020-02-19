@@ -22,7 +22,6 @@
 
 <script>
     import { getTubeLines } from "../requests.js";
-    // import singleDropdown from '../components/SingleDropdown.vue';
     import grid from '../components/Grid.vue';
     import { mapState, mapActions } from 'vuex';
 
@@ -40,7 +39,6 @@
             ...mapState(['lineId'])
         },
         components: {
-            // 'singleDropdown': singleDropdown,
             grid
         },
         methods: {
