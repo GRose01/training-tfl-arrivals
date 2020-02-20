@@ -3,7 +3,6 @@
         <h1>Stations</h1>
         <div>this line via $route.params.lineId = {{ $route.params.lineId }}</div>
         <div>this station via $route.params.stopPoint = {{ $route.params.stopPoint }}</div>
-        <!-- <div>{{ this.$route }}</div> -->
         <grid
             title="Pick the Station"
             :grid="stations"
@@ -28,12 +27,14 @@
                 stations: [],
             }
         },
+        computed: {
+        },
         components: {
             grid
         },
         methods: {
             setSelectedItem(station) {
-                this.$router.push({ name: 'Platforms', params: {lineId: this.$route.params.lineId, stopPoint: station} })
+                this.$router.push({ path: `/${this.$route.params.lineId}/${station}` })  
             },
         },
         created: function() {

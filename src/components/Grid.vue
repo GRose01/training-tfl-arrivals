@@ -6,7 +6,6 @@
                     <h5 
                         v-for="card in grid" 
                         :key="card.value" 
-                        :value="card.value"
                         @click="selectItem(card.value)"               
                         >
                         {{ card.name }}

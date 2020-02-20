@@ -1,14 +1,14 @@
 <template>
     <div>
         <h1>Platforms</h1>
+        <div>this line via $route.params.lineId = {{ $route.params.lineId }}</div>
+        <div>this station via $route.params.stopPoint = {{ $route.params.stopPoint }}</div>
+        <div>this station via $route.params.platform = {{ $route.params.platform}}</div>
          <grid
             title="Pick the Platform"
             :grid="platforms"
             @itemChanged="setSelectedItem"
             ></grid> 
-        <!-- <p>Line: {{ lineId }} </p>
-        <p>StopPoint: {{ stopPoint }} </p> 
-        <p>Platform: {{ platform }} </p> -->
     </div>
 </template>
 
@@ -16,7 +16,7 @@
     import { getPlatforms } from "../requests.js";
     import grid from '../components/Grid.vue';
     import { dedupe } from '../utilities/dedupe.js';
-    import { mapState } from 'vuex';
+    import { mapState, mapActions } from 'vuex';
 
     export default {
         name: "Platforms",
@@ -37,21 +37,17 @@
             grid
         },
         computed: {
-          // ...mapState(['lineId']),
-          // ...mapState(['stopPoint']),
-          // ...mapState(['platform']),
           ...mapState(['timetable'])
         },
         methods: {
-          // ...mapActions(['changePlatform']),
-          // ...mapActions(['setTimetable']),
+          ...mapActions(['setTimetable']),
           setSelectedItem(platform) {
-                // this.changePlatform(platform)
-                this.$router.push({ name: 'Arrivals', params: {platform: platform} })  
+                this.$router.push({ path: `/${this.$route.params.lineId}/${this.$route.params.stopPoint}/${platform}` })   
           }
         },
         created: function() {
             getPlatforms(this.stopPoint)
+            
                 .then(response => {
                   this.setTimetable(response)
                   

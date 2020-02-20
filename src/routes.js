@@ -5,15 +5,19 @@ import ArrivalsBoard from './pages/ArrivalsBoard.vue'
 
 const routes = [
     { path: '/', component: Home},
-    { path: '/:lineId', name: 'Stations', component: Stations, props: true,
-        children: [
-            { path: ':stopPoint', name: 'Platforms', component: Platforms, props: true,
-                children: [
-                    { path: ':platform', name: 'Arrivals', component: ArrivalsBoard, props: true}
-                ]    
-            }
-        ]
-    }
+    { path: '/:lineId', name: 'Stations', component: Stations, props: true},
+    { path: '/:lineId/:stopPoint', name: 'Platforms', component: Platforms, props: true},
+    { path: '/:lineId/:stopPoint/:platform', name: 'Arrivals', component: ArrivalsBoard, props: true}
+
+
+        // children: [
+        //     { path: ':stopPoint', name: 'Platforms', component: Platforms, props: true,
+        //         children: [
+        //             { path: ':platform', name: 'Arrivals', component: ArrivalsBoard, props: true}
+        //         ]    
+        //     }
+        // ]
+    // }
 ];
 
 export default routes;

@@ -33,10 +33,7 @@
             // accept the emit and add in the router
             setSelectedItem(line) {
                 this.$router.push({ name: 'Stations', params: {lineId: line} })
-            },
-            // goBack() {
-            //     window.history.length > 1 ? this.$router.go(-1) : this.$router.push('/')
-            // }
+            }
         },
         created: function(){
             getTubeLines()

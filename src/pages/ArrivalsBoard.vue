@@ -2,10 +2,6 @@
     <div>
         <h1>Arrivals board</h1>
 
-        <p>Line: {{ lineId }} </p>
-        <p>StopPoint: {{ stopPoint }} </p> 
-        <p>Platform: {{ platform }} </p>  
-
         <div class="refresh">
             <button v-on:click="refresh" class="refreshButton">Refresh</button>
             <div>Refresh in: {{seconds}} seconds</div>
@@ -48,9 +44,6 @@
             
         },
         computed: {
-          ...mapState(['lineId']),
-          ...mapState(['stopPoint']),
-          ...mapState(['platform']),
           ...mapState(['timetable'])
         },
         methods: {
@@ -58,11 +51,17 @@
             // this is called when plaform selected and renders correct timetable info
                 this.isLoaded = true;
                 this.refresh();
+                // eslint-disable-next-line no-console
+                console.log('platform:', this.platform, 'line', this.lineId)
+                const platform = this.$route.params.platform
+                const line = this.$route.params.lineId
+                
                 this.platformArrivals = this.timetable.filter(x => {
-                    return x.platformName === this.platform && x.lineId === this.lineId
+                    return x.platformName === platform && x.lineId === line
                 });
                 return this.platformArrivals.sort((a, b) => {
                     return a.timeToStation - b.timeToStation;
+                    
                 });
             },
             countdown() {
@@ -79,7 +78,7 @@
             },
             refresh() {
                 clearInterval(this.timer)
-                this.seconds = 30
+                this.seconds = 60
                 this.timer = null
                 this.countdown()  
             }
