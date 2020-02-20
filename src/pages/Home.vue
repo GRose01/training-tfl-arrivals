@@ -1,33 +1,29 @@
-/* eslint-disable no-console */
 <template>
     <div>
         <h1>Home</h1>
+            <div>this line via $route.params.lineId = {{ $route.params.lineId }}</div>
             <grid
             title="Pick the Line"
             :grid="lines"
             @itemChanged="setSelectedItem"
             ></grid>
-        <p>Line: {{ lineId }}</p>
     </div>
 </template>
 
 <script>
     import { getTubeLines } from "../requests.js";
     import grid from '../components/Grid.vue';
-    import { mapState, mapActions } from 'vuex';
+    import { mapActions } from 'vuex';
 
     export default {
         name: "Home",
         data () {
             return {
-                lineLabel: "lines",
-                lineText: "Line: ",
-                linePlaceholder: "Choose a line",
-                lines: [],
+                lines: []
             }
         },
         computed: {
-            ...mapState(['lineId'])
+            // ...mapState(['lineId']),
         },
         components: {
             grid
@@ -36,10 +32,11 @@
             ...mapActions(['changeLine']),
             // accept the emit and add in the router
             setSelectedItem(line) {
-                this.changeLine(line)
-                this.$router.push({ name: 'Stations', params: {id: this.lineId} })
-                
-            }
+                this.$router.push({ name: 'Stations', params: {lineId: line} })
+            },
+            // goBack() {
+            //     window.history.length > 1 ? this.$router.go(-1) : this.$router.push('/')
+            // }
         },
         created: function(){
             getTubeLines()

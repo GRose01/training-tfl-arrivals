@@ -6,9 +6,9 @@
             :grid="platforms"
             @itemChanged="setSelectedItem"
             ></grid> 
-        <p>cLine: {{ lineId }} </p>
+        <!-- <p>Line: {{ lineId }} </p>
         <p>StopPoint: {{ stopPoint }} </p> 
-        <p>Platform: {{ platform }} </p>
+        <p>Platform: {{ platform }} </p> -->
     </div>
 </template>
 
@@ -20,21 +20,26 @@
 
     export default {
         name: "Platforms",
+        props: {
+            lineId: {
+                type: String
+            }, 
+            stopPoint: {
+                type: String
+            }
+        },
         data () {
             return {
-              platformLabel: "platforms",
-              platformText: "Platform: ",
-              platformPlaceholder: "Choose a platform",
-              platforms: [],
+              platforms: []
             }
         },
         components: {
             grid
         },
         computed: {
-          ...mapState(['lineId']),
-          ...mapState(['stopPoint']),
-          ...mapState(['platform']),
+          // ...mapState(['lineId']),
+          // ...mapState(['stopPoint']),
+          // ...mapState(['platform']),
           ...mapState(['timetable'])
         },
         methods: {
@@ -42,7 +47,7 @@
           ...mapActions(['setTimetable']),
           setSelectedItem(platform) {
                 this.changePlatform(platform)
-                this.$router.push({ name: 'Arrivals', params: {id: this.platform} })  
+                this.$router.push({ name: 'Arrivals', params: {platform_id: this.platform} })  
           }
         },
         created: function() {
