@@ -16,7 +16,7 @@
     import { getPlatforms } from "../requests.js";
     import grid from '../components/Grid.vue';
     import { dedupe } from '../utilities/dedupe.js';
-    import { mapState, mapActions } from 'vuex';
+    import { mapState } from 'vuex';
 
     export default {
         name: "Platforms",
@@ -43,11 +43,11 @@
           ...mapState(['timetable'])
         },
         methods: {
-          ...mapActions(['changePlatform']),
-          ...mapActions(['setTimetable']),
+          // ...mapActions(['changePlatform']),
+          // ...mapActions(['setTimetable']),
           setSelectedItem(platform) {
-                this.changePlatform(platform)
-                this.$router.push({ name: 'Arrivals', params: {platform_id: this.platform} })  
+                // this.changePlatform(platform)
+                this.$router.push({ name: 'Arrivals', params: {platform: platform} })  
           }
         },
         created: function() {

@@ -9,7 +9,7 @@ const routes = [
         children: [
             { path: ':stopPoint', name: 'Platforms', component: Platforms, props: true,
                 children: [
-                    { path: ':platform', name: 'Arrivals', component: ArrivalsBoard}
+                    { path: ':platform', name: 'Arrivals', component: ArrivalsBoard, props: true}
                 ]    
             }
         ]

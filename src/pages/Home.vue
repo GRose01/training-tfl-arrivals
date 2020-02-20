@@ -13,7 +13,7 @@
 <script>
     import { getTubeLines } from "../requests.js";
     import grid from '../components/Grid.vue';
-    import { mapActions } from 'vuex';
+    // import { mapState, mapActions } from 'vuex';
 
     export default {
         name: "Home",
@@ -29,7 +29,7 @@
             grid
         },
         methods: {
-            ...mapActions(['changeLine']),
+            // ...mapActions(['changeLine']),
             // accept the emit and add in the router
             setSelectedItem(line) {
                 this.$router.push({ name: 'Stations', params: {lineId: line} })
