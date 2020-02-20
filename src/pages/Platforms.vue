@@ -1,10 +1,9 @@
 <template>
     <div>
         <h1>Platforms</h1>
-        <div>this line via $route.params.lineId = {{ $route.params.lineId }}</div>
-        <div>this station via $route.params.stopPoint = {{ $route.params.stopPoint }}</div>
-        <div>this station via $route.params.platform = {{ $route.params.platform}}</div>
-         <grid
+        <div>Line selected: {{ $route.params.lineId }}</div>
+        <div>Station selected: {{ $route.params.stopPoint }}</div>          
+        <grid
             title="Pick the Platform"
             :grid="platforms"
             @itemChanged="setSelectedItem"

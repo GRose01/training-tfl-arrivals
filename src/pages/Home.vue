@@ -1,7 +1,6 @@
 <template>
     <div>
         <h1>Home</h1>
-            <div>this line via $route.params.lineId = {{ $route.params.lineId }}</div>
             <grid
             title="Pick the Line"
             :grid="lines"

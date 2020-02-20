@@ -1,6 +1,9 @@
 <template>
     <div>
         <h1>Arrivals board</h1>
+        <div>Line selected: {{ $route.params.lineId }}</div>
+        <div>Station selected: {{ $route.params.stopPoint }}</div>
+        <div>Platform selected: {{ $route.params.platform }}</div>
 
         <div class="refresh">
             <button v-on:click="refresh" class="refreshButton">Refresh</button>
@@ -55,7 +58,7 @@
                 console.log('platform:', this.platform, 'line', this.lineId)
                 const platform = this.$route.params.platform
                 const line = this.$route.params.lineId
-                
+
                 this.platformArrivals = this.timetable.filter(x => {
                     return x.platformName === platform && x.lineId === line
                 });
